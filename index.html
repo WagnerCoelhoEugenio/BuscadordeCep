@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/app.css">
+
+    <script>
+
+        async function getAddressByCep() {
+            const Cep = document.getElementById(`Cep`).value;
+            try {
+                const response = await fetch(`https://viacep.com.br/ws/${Cep}/json/`);
+                const data = await response.json();
+                console.log(data);
+                document.getElementById(`Rua`).value = data.logradouro;
+                document.getElementById(`Bairro`).value = data.bairro;
+                document.getElementById(`Cidade`).value = data.localidade;
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+
+        async function getPrevisao() {
+            const lat = document.getElementById(`Latitude`).value;
+            const long = document.getElementById(`Longitude`).value;
+            try {
+                const response = await fetch(
+                    `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${long}&hourly=temperature_2m,rain`
+                );
+                const data = await response.json();
+                console.log(data);
+                document.getElementById(`resposta`).innerHTML = "";
+
+                // Correct the typo in 'length' and use the correct array property
+                for (let index = 0; index < data.hourly.temperature_2m.length; index++) {
+                    // Use the correct array property
+                    document.getElementById(`resposta`).innerHTML += `<div>${data.hourly.time[index]} - ${data.hourly.temperature_2m[index]} <div/>`;
+                }
+            } catch (error) {
+                alert(error.message);
+            }
+        }
+
+    </script>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="container text-center">
+            <div class="row align-items-start">
+                <div class="col mt-5 btn btn-primary fs-1">
+                    Buscador de Endereço
+                </div>
+
+
+            </div>
+        </div>
+        <div class="mt-5 mb-3 row">
+            <label for="Cep" class="col-sm-2 col-form-label">Cep</label>
+            <div class="col-sm">
+                <input type="text" class="form-control" id="Cep" value="" />
+            </div>
+            <div class="col-4">
+                <button type="button" class="btn btn-primary w-100" onclick="getAddressByCep()">ok</button>
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="Rua" class="col-sm-2 col-form-label">Rua</label>
+            <div class="col-sm">
+                <input type="text" readonly class="form-control" id="Rua">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="Bairro" class="col-sm-2 col-form-label">Bairro</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control" id="Bairro">
+            </div>
+        </div>
+        <div class="mb-3 row">
+            <label for="Cidade" class="col-sm-2 col-form-label">Cidade</label>
+            <div class="col-sm-10">
+                <input type="text" readonly class="form-control" id="Cidade">
+            </div>
+        </div>
+    </div>
+    <hr>
+
+    <div class="container">
+        <div class="mt-5 mb-3 row">
+            <label for="Latitude" class="col-sm-2 col-form-label">Latitude</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="Latitude" value="" />
+            </div>
+        </div>
+
+
+        <div class="mb-3 row">
+            <label for="Longitude" class="col-sm-2 col-form-label">Longitude</label>
+            <div class="col-sm">
+                <input type="text" class="form-control" id="Longitude" value="">
+            </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="getPrevisao()">Ok</button>
+    </div>
+    </div>
+    <div class="container">
+        <div id="resposta">
+        </div>
+    </div>
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
